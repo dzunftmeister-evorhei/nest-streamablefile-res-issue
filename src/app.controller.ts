@@ -12,15 +12,33 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('/fileTest')
-  async getFileTest(@Res() response): Promise<StreamableFile> {
-    const dynmaicFileName = `test_${Date.now()}.json`;
+  @Get('/fileTestInline')
+  async getFileTestInline(
+    @Res({ passthrough: true }) response,
+  ): Promise<StreamableFile> {
+    const dynmaicFileName = `test_${Date.now()}.svg`;
+    response.header('Content-Type', 'image/svg');
+    response.header(
+      'Content-Disposition',
+      `inline;filename=${dynmaicFileName}`,
+    );
+
+    const file = createReadStream(join(process.cwd(), 'logo_text.svg'));
+    return new StreamableFile(file);
+  }
+
+  @Get('/fileTestDownload')
+  async getFileTestDownload(
+    @Res({ passthrough: true }) response,
+  ): Promise<StreamableFile> {
+    const dynmaicFileName = `test_${Date.now()}.svg`;
+    response.header('Content-Type', 'image/svg');
     response.header(
       'Content-Disposition',
       `attachment;filename=${dynmaicFileName}`,
     );
 
-    const file = createReadStream(join(process.cwd(), 'package.json'));
+    const file = createReadStream(join(process.cwd(), 'logo_text.svg'));
     return new StreamableFile(file);
   }
 }
