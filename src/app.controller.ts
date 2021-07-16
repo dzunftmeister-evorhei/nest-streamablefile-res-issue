@@ -12,13 +12,32 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  @Get('/test')
+  getTest(): string {
+    return `
+      <!doctype html>
+
+      <html lang="en">
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>test</title>
+        </head>
+        
+        <body>
+          <img width="200" src="/fileTestInline" />
+        </body>
+      </html>
+    `;
+  }
+
   @Get('/fileTestInline')
   async getFileTestInline(
     @Res({ passthrough: true }) response,
   ): Promise<StreamableFile> {
     const dynmaicFileName = `test_${Date.now()}.svg`;
-    response.header('Content-Type', 'image/svg');
-    response.header(
+    response.setHeader('Content-Type', 'image/svg+xml');
+    response.setHeader(
       'Content-Disposition',
       `inline;filename=${dynmaicFileName}`,
     );
@@ -32,8 +51,8 @@ export class AppController {
     @Res({ passthrough: true }) response,
   ): Promise<StreamableFile> {
     const dynmaicFileName = `test_${Date.now()}.svg`;
-    response.header('Content-Type', 'image/svg');
-    response.header(
+    response.setHeader('Content-Type', 'image/svg');
+    response.setHeader(
       'Content-Disposition',
       `attachment;filename=${dynmaicFileName}`,
     );
